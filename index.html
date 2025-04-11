@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="landecs.png" type="image/png">
+    <title>Qrevion | Free QR code generator</title>
+    <meta name="title" content="Scanix Pro | Premium High-Quality QR Code Generator Online">
+    <meta name="description" content="Generate high resolution QR codes with logos for free. Custom shapes, colors, and sizes. Professional-grade QR codes with neural enhancement for perfect scanning every time.">
+    <meta name="keywords" content="QR code generator, high quality QR code, custom QR code, QR code with logo, professional QR code, free QR code maker, business QR code">
+
+    <link rel="canonical" href="https://eldrexdelosreyesbula.github.io/qrevion/">
+
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" crossorigin="anonymous">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" as="script" crossorigin="anonymous">
+
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index,follow">
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Performance Optimization -->
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Security Headers (would be implemented server-side) -->
+    <!--
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    -->
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">Qrevion</div>
+        <div class="tagline">Built by LanDecs. Made for Tomorrow.</div>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-qrcode"></i> QREVION</h2>
+
+            <div class="form-group">
+                <label for="url">Link or Text</label>
+                <input type="text" id="url" placeholder="https://example.com or any text" required>
+            </div>
+
+            <div class="form-group">
+                <label for="size">Size</label>
+                <select id="size">
+                    <option value="150">Small</option>
+                    <option value="200" selected>Medium</option>
+                    <option value="300">Large</option>
+                    <option value="400">Extra Large</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Logo Image (Optional)</label>
+                <div class="file-input-container">
+                    <div class="file-input-button" id="file-input-label">
+                        <i class="fas fa-image"></i>
+                        <span>Choose an image</span>
+                    </div>
+                    <input type="file" id="image" class="file-input" accept="image/*">
+                </div>
+                <img id="preview" class="preview-image" alt="Logo preview">
+            </div>
+
+            <div class="style-toggle" id="style-toggle">
+                <span>Advanced Style Options</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <div class="style-options" id="style-options">
+                <div class="form-group">
+                    <label>QR Code Color</label>
+                    <div class="color-options">
+                        <div class="color-option selected" style="background-color: #000000;" data-color="000000"></div>
+                        <div class="color-option" style="background-color: #0071e3;" data-color="0071e3"></div>
+                        <div class="color-option" style="background-color: #34c759;" data-color="34c759"></div>
+                        <div class="color-option" style="background-color: #ff9500;" data-color="ff9500"></div>
+                        <div class="color-option" style="background-color: #ff2d55;" data-color="ff2d55"></div>
+                        <div class="color-option" style="background-color: #5856d6;" data-color="5856d6"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>QR Code Shape</label>
+                    <div class="shape-options">
+                        <div class="shape-option selected" data-shape="square">Square</div>
+                        <div class="shape-option" data-shape="dots">Dots</div>
+                        <div class="shape-option" data-shape="rounded">Rounded</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" id="generate-btn">
+                <i class="fas fa-magic"></i> Generate QR Code
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="skeleton skeleton-qr"></div>
+            <div class="loading-text">Generating...</div>
+        </div>
+
+        <div class="card result-container" id="result-container">
+            <h2 class="card-title"><i class="fas fa-check-circle" style="color: var(--success-color);"></i> Your QR Code is Ready</h2>
+
+            <div class="qr-code-container">
+                <div class="gradient-animation"></div>
+                <img id="qr-code" class="qr-code" alt="Generated QR Code">
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" id="download-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="action-btn" id="share-btn">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 Qrevion | LanDecs
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
