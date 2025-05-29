@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memora AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --system-bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-active: #0062c4;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #aeaeb2;
+      --transition: 0.4s cubic-bezier(0.28, 0.11, 0.32, 1);
+      --transition-fast: 0.2s cubic-bezier(0.28, 0.11, 0.32, 1);
+      --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
+      --border-radius-sm: 12px;
+      --border-radius-md: 18px;
+      --border-radius-lg: 24px;
+      --max-width: 580px;
+      --header-height: 60px;
+      --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --system-bg: #000000;
+        --card-bg: #1c1c1e;
+        --primary: #0a84ff;
+        --primary-hover: #1e8eff;
+        --primary-active: #0071e3;
+        --text-primary: #f5f5f7;
+        --text-secondary: #aeaeb2;
+        --text-tertiary: #636366;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--system-bg);
+      color: var(--text-primary);
+      transition: background-color var(--transition), color var(--transition);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 20px;
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--primary);
+      background-color: rgba(var(--card-bg-rgb), 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 0.5px solid rgba(var(--text-primary-rgb), 0.1);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px calc(24px + var(--safe-area-inset-bottom));
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 28px;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: var(--max-width);
+      transition: all var(--transition);
+      will-change: transform, box-shadow;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0.5px;
+      background: linear-gradient(90deg, rgba(var(--text-primary-rgb), 0), rgba(var(--text-primary-rgb), 0.1), rgba(var(--text-primary-rgb), 0));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      border: none;
+      border-radius: var(--border-radius-md);
+      font-size: 17px;
+      font-weight: 400;
+      resize: none;
+      background: rgba(var(--text-primary-rgb), 0.03);
+      color: var(--text-primary);
+      font-family: inherit;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: all var(--transition-fast);
+      outline: none;
+    }
+
+    textarea:focus {
+      background: rgba(var(--text-primary-rgb), 0.05);
+      box-shadow: inset 0 0 0 1px rgba(var(--primary-rgb), 0.3), inset 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    textarea::placeholder {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    button {
+      padding: 0 24px;
+      height: 44px;
+      border: none;
+      border-radius: var(--border-radius-md);
+      background: var(--primary);
+      color: white;
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.25);
+    }
+
+    button:active {
+      background: var(--primary-active);
+      transform: translateY(0);
+      box-shadow: 0 2px 12px rgba(var(--primary-rgb), 0.2);
+    }
+
+    button:active::after {
+      opacity: 0.1;
+    }
+
+    button:disabled {
+      background: var(--text-tertiary);
+      transform: none !important;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .response {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(var(--text-primary-rgb), 0.03);
+      border-radius: var(--border-radius-md);
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+      font-size: 17px;
+      line-height: 1.5;
+      transition: all var(--transition);
+      opacity: 0;
+      transform: translateY(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .response.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .response.loading {
+      background-image: linear-gradient(
+        90deg,
+        rgba(var(--text-primary-rgb), 0.03) 0%,
+        rgba(var(--text-primary-rgb), 0.05) 50%,
+        rgba(var(--text-primary-rgb), 0.03) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 8px;
+      padding: 12px 0;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translateY(-6px);
+        opacity: 0.8;
+      }
+    }
+
+    /* Physics-based animation for the button when clicked */
+    @keyframes buttonSpring {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(0.96);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .button-spring {
+      animation: buttonSpring 0.4s cubic-bezier(0.3, 0.7, 0.4, 1.5);
+    }
+
+    /* Smooth scrolling for response box */
+    .response::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .response::-webkit-scrollbar-track {
+      background: rgba(var(--text-primary-rgb), 0.04);
+      border-radius: 3px;
+    }
+
+    .response::-webkit-scrollbar-thumb {
+      background: rgba(var(--text-primary-rgb), 0.2);
+      border-radius: 3px;
+    }
+
+    .response::-webkit-scrollbar-thumb:hover {
+      background: rgba(var(--text-primary-rgb), 0.3);
+    }
+
+    /* Micro-interaction for textarea when focused */
+    .input-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--transition-fast);
+    }
+
+    .input-container:focus-within::after {
+      transform: scaleX(1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+        border-radius: var(--border-radius-md);
+      }
+      
+      textarea {
+        font-size: 16px;
+      }
+      
+      button {
+        height: 40px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Memora AI</header>
+  <main>
+    <div class="card">
+      <div class="input-container">
+        <textarea id="userInput" rows="5" placeholder="Ask Memora anything..."></textarea>
+      </div>
+      <div class="button-container">
+        <button id="askButton" onclick="askMemora()">Ask Memora</button>
+      </div>
+      <div class="response" id="responseBox">
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <div id="responseContent">Response will appear here.</div>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Convert CSS variables to RGB for JS manipulation
+    const rootStyles = getComputedStyle(document.documentElement);
+    const textPrimaryRgb = rootStyles.getPropertyValue('--text-primary').trim();
+    const primaryRgb = rootStyles.getPropertyValue('--primary').trim();
+    document.documentElement.style.setProperty('--text-primary-rgb', textPrimaryRgb.startsWith('#') ? hexToRgb(textPrimaryRgb) : textPrimaryRgb);
+    document.documentElement.style.setProperty('--primary-rgb', primaryRgb.startsWith('#') ? hexToRgb(primaryRgb) : primaryRgb);
+    document.documentElement.style.setProperty('--card-bg-rgb', getComputedStyle(document.body).backgroundColor.startsWith('#') ? hexToRgb(getComputedStyle(document.body).backgroundColor) : getComputedStyle(document.body).backgroundColor);
+
+    function hexToRgb(hex) {
+      const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+      
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+    }
+
+    async function askMemora() {
+      const input = document.getElementById('userInput').value.trim();
+      const responseBox = document.getElementById('responseBox');
+      const responseContent = document.getElementById('responseContent');
+      const typingIndicator = document.getElementById('typingIndicator');
+      const askButton = document.getElementById('askButton');
+      
+      if (!input) {
+        showResponse('Please enter a question.');
+        return;
+      }
+
+      // Disable button during request
+      askButton.disabled = true;
+      
+      // Add spring animation to button
+      askButton.classList.add('button-spring');
+      setTimeout(() => askButton.classList.remove('button-spring'), 400);
+      
+      // Show loading state
+      responseContent.textContent = '';
+      typingIndicator.style.display = 'flex';
+      responseBox.classList.add('loading');
+      responseBox.classList.add('show');
+      
+      try {
+        const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer sk-6f6a19cdc39a4f17b72c57e3128a284f'
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [{ role: 'user', content: input }],
+            temperature: 0.7,
+            stream: true // Enable streaming for better UX
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error(`API request failed with status ${res.status}`);
+        }
+
+        // Handle streaming response
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let responseText = '';
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n').filter(line => line.trim() !== '');
+          
+          for (const line of lines) {
+            const message = line.replace(/^data: /, '');
+            if (message === '[DONE]') {
+              break;
+            }
+            
+            try {
+              const parsed = JSON.parse(message);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) {
+                responseText += content;
+                // Update response incrementally
+                responseContent.textContent = responseText;
+                
+                // Auto-scroll to bottom
+                responseBox.scrollTop = responseBox.scrollHeight;
+              }
+            } catch (err) {
+              console.error('Error parsing message:', err);
+            }
+          }
+        }
+        
+        typingIndicator.style.display = 'none';
+        responseBox.classList.remove('loading');
+        
+        if (!responseText.trim()) {
+          showResponse('No response received. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showResponse('Error: ' + error.message);
+      } finally {
+        askButton.disabled = false;
+      }
+    }
+
+    function showResponse(message) {
+      const responseBox = document.getElementById('responseBox');
+      const responseContent = document.getElementById('responseContent');
+      const typingIndicator = document.getElementById('typingIndicator');
+      
+      typingIndicator.style.display = 'none';
+      responseContent.textContent = message;
+      responseBox.classList.remove('loading');
+      responseBox.classList.add('show');
+      
+      // Auto-scroll to bottom
+      setTimeout(() => {
+        responseBox.scrollTop = responseBox.scrollHeight;
+      }, 10);
+    }
+
+    // Add keyboard shortcut (Cmd+Enter or Ctrl+Enter to submit)
+    document.getElementById('userInput').addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        askMemora();
+      }
+    });
+
+    // Better textarea auto-resize
+    document.getElementById('userInput').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+  </script>
+</body>
+</html>
